@@ -1,0 +1,39 @@
+<!-- Modal -->
+<div id="age-restriction-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{modal_title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{message}}</p>
+      </div>
+      <div class="modal-footer">
+        <button id="age-positive" type="button" class="btn btn-default" data-dismiss="modal">{{modal_agree}}</button>
+        <button id="age-negative"  type="button" class="btn btn-default" data-dismiss="modal">{{modal_disagree}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    var AGE_RESTRICTION_SESSION_KEY = '{{session_redirect}}';
+
+    window.addEventListener('load', function(){
+        $(document.getElementById('age-restriction-modal')).modal({backdrop: "static"});
+
+
+        document.getElementById('age-negative').addEventListener('click', function(){
+            window.location = "{{redirect_url}}";
+        });
+
+        document.getElementById('age-positive').addEventListener('click', function(){
+            $.post(AGE_RESTRICTION_SESSION_KEY, { age: {{age}} }, function(response){
+                if (JSON.parse(response).success != 1) {
+                  console.log('Session Error. Check your cookie!');
+                }
+            });
+        });
+    });
+</script>
