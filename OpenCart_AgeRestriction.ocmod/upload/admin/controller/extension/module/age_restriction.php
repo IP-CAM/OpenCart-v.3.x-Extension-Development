@@ -23,6 +23,7 @@ class ControllerExtensionModuleAgeRestriction extends Controller {
 		}
 	}
 
+	// Create new module in db
 	private function addModule() {
 		// Load admin setting/module model
 		$this->load->model('setting/module');
@@ -34,17 +35,15 @@ class ControllerExtensionModuleAgeRestriction extends Controller {
 		return $this->db->getLastId();
 	}
 
+	// Modify existing module in db
 	protected function editModule($module_id) {
-		// Load admin setting/module model
-		$this->load->model('setting/module');
+		$this->load->model('setting/module'); // Load admin setting/module model
+		$this->load->language('extension/module/age_restriction'); // Load language table
 
-		// Load language table
-		$this->load->language('extension/module/age_restriction');
-
-		// Set page title to local language heading
+		// Set page title to heading
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		// If a POST request is detected, and validate returns 'true'
+		// If a POST request is detected, and validate returns 'true', do this
 		if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validate()) {
 			// Edit database entry for module (module_id), set to value of POST request
 			$this->model_setting_module->editModule($this->request->get['module_id'], $this->request->post);
@@ -56,7 +55,6 @@ class ControllerExtensionModuleAgeRestriction extends Controller {
 			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true));
 		}
 
-		// Declare new array object 'data'
 		$data = array();
 
 		// Get module for $module_id
