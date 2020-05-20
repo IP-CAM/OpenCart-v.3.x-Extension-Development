@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+
+    <code>BetterChartsExtensionForOpenCart</code>
+    <name>BetterCharts</name>
+    <version>1.0</version>
+    <author>Will Tait</author>
+    <link>www.example.com</link>
+
+    <!-- Replace chart colour settings with custom inputs -->
+    <file path="admin/view/template/extension/dashboard/chart_info.twig">
+        <!-- Bar colours -->
+        <operation error="skip">
+            <search><![CDATA[
+            colors: ['#9FD5F1', '#1065D2'],
+            ]]></search>
+
+            <add position="replace"><![CDATA[
+            colors: ['{{Colour1}}', '{{Colour2}}'],
+            ]]></add>
+        </operation>
+        <!-- Background colour -->
+        <operation error="skip">
+            <search><![CDATA[
+            backgroundColor: '#FFFFFF',
+            ]]></search>
+
+            <add position="replace"><![CDATA[
+            backgroundColor: '{{Colour3}}',
+            ]]></add>
+        </operation>
+    </file>
+
+    <!-- PHP to handle adding colours to admin dashboard -->
+    <file path="admin/controller/extension/dashboard/chart.php">
+        <operation error="skip">
+            <search><![CDATA[
+            $data['user_token'] = $this->session->data['user_token'];
+            ]]></search>
+
+            <add position="above"><![CDATA[
+            $this->load->model('setting/module');
+			$module_id = $this->model_setting_module->getModulesByCode('BetterCharts')[0]['module_id'];
+			$module_setting = $this->model_setting_module->getModule($module_id);
+            if (isset($module_id) and isset($module_setting)) {
+				$data['Colour1'] = $module_setting['Colour1'];
+				$data['Colour2'] = $module_setting['Colour2'];
+            } else {
+                // Default colours for if something breaks
+				$data['Colour1'] = '#9FD5F1';
+				$data['Colour2'] = '#1065D2';
+            }
+            ]]></add>
+        </operation>
+        
+    </file>
+    
+</modification>
